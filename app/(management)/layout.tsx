@@ -1,17 +1,24 @@
 "use client";
 import {
-  CalendarOutlined, GithubFilled,
-  InfoCircleFilled, KeyOutlined, LogoutOutlined, NotificationOutlined, QuestionCircleFilled, UserOutlined
+  CalendarOutlined,
+  GithubFilled,
+  InfoOutlined,
+  KeyOutlined,
+  LogoutOutlined,
+  NotificationOutlined,
+  QuestionCircleFilled,
+  UserOutlined,
 } from "@ant-design/icons";
+import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import {
-  PageContainer, ProLayout
-} from "@ant-design/pro-components";
-import {
-  faCommentDots, faDatabase,
-  faPalette, faPuzzlePiece, faRobot
+  faCommentDots,
+  faDatabase,
+  faPalette,
+  faPuzzlePiece,
+  faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, MenuProps } from "antd";
+import { Dropdown, MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
@@ -36,7 +43,7 @@ export default function RootLayout({
   //用户下拉菜单点击操作
   const onActionClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "logout") {
-      push("/login")
+      push("/login");
     } else if (key === "profile") {
       push("/user/profile");
     }
@@ -57,7 +64,25 @@ export default function RootLayout({
       }}
     >
       <ProLayout
-        siderWidth={216}
+        title="武侯 AI"
+        logo="/favicon.png"
+        siderWidth={180}
+        style={{
+          height: "100vh",
+        }}
+        menu={{
+          type: "group",
+          collapsedShowTitle: true,
+        }}
+        token={{
+          sider: {
+            colorMenuBackground: "#fff",
+            colorMenuItemDivider: "#dfdfdf",
+            colorTextMenu: "#595959",
+            colorTextMenuSelected: "#4096ff",
+            colorBgMenuItemSelected: "rgba(230,243,254,1)",
+          },
+        }}
         route={{
           path: "/chat",
           routes: [
@@ -90,6 +115,16 @@ export default function RootLayout({
         location={{
           pathname,
         }}
+        menuItemRender={(item, dom) => (
+          <div
+            onClick={() => {
+              setPathname(item.path || "/chat");
+              setPageName(generatePageTitle(item.icon, item.name));
+            }}
+          >
+            <Link href={item.path !== undefined ? item.path : ""}>{dom}</Link>
+          </div>
+        )}
         avatarProps={{
           src: "/avatar.jpeg",
           size: "small",
@@ -132,6 +167,9 @@ export default function RootLayout({
                       icon: <LogoutOutlined />,
                       label: "退出登录",
                     },
+                    {
+                      type: "divider",
+                    },
                   ],
                   onClick: onActionClick,
                 }}
@@ -144,28 +182,31 @@ export default function RootLayout({
         actionsRender={(props) => {
           if (props.isMobile) return [];
           return [
-            <InfoCircleFilled key="InfoCircleFilled" />,
             <QuestionCircleFilled key="QuestionCircleFilled" />,
-            <GithubFilled key="GithubFilled" />,
+            <Link
+              key="github"
+              href="https://github.com/mortise-and-tenon/wuhou-ai"
+              target="_blank"
+            >
+              <GithubFilled key="GithubFilled" style={{ color: "gray" }} />
+            </Link>,
           ];
         }}
-        menuItemRender={(item, dom) => (
-          <div
-            onClick={() => {
-              setPathname(item.path || "/chat");
-              setPageName(generatePageTitle(item.icon, item.name));
-            }}
-          >
-            <Link href={item.path !== undefined ? item.path : ""}>{dom}</Link>
-          </div>
-        )}
+        footerRender={(props) => {
+          return (
+            <p
+              style={{
+                textAlign: 'center',
+                color: 'rgba(0,0,0,0.6)',
+              }}
+            >
+              ©{new Date().getFullYear()} Mortnon. (V1.0.0)
+            </p>
+          );
+        }}
       >
         <PageContainer
           title={pageName}
-          style={{
-            height: "100vh",
-            minHeight: 600,
-          }}
         >
           {children}
         </PageContainer>
