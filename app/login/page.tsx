@@ -14,7 +14,7 @@ import { LoginReqEntity } from "../_modules/definies";
 type LoginType = "phone" | "account";
 
 export default () => {
-  const router = useRouter();
+  const {push} = useRouter();
   const [loginType, setLoginType] = useState<LoginType>("account");
 
   const loginFormRef = useRef<ProFormInstance>();
@@ -27,7 +27,7 @@ export default () => {
     };
 
     message.success("模拟：登录成功");
-    router.push("/");
+    push("/");
   };
 
   return (
