@@ -16,11 +16,12 @@
     "app": "Application",
     "plugin": "Plugin",
     "dataset": "Knowledge Base",
+    "account": "Account",
     "account_info": "Personal Information",
-    "log": "Usage Record",
-    "api_key": "API Key",
-    "customize": "Personalization",
-    "notice": "Notice",
+    "account_log": "Usage Record",
+    "account_api": "API Key",
+    "account_customize": "Personalization",
+    "account_notice": "Notice",
     "logout": "Sign Out"
   }
 }

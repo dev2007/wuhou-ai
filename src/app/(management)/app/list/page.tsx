@@ -1,23 +1,13 @@
 "use client";
 
 import {
-  PageContainer,
-  ProCard,
-  ProDescriptions,
-  ProForm,
-  ProFormRadio,
-  ProFormText,
+  ProCard
 } from "@ant-design/pro-components";
 
 export default function AppList() {
   return (
-    <PageContainer
-      header={{
-        title: false,
-        breadcrumb: {},
-      }}
-    >
+    <ProCard>
       <div>应用列表</div>
-    </PageContainer>
+    </ProCard>
   );
 }

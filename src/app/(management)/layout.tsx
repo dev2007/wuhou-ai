@@ -2,7 +2,6 @@
 import {
   CalendarOutlined,
   GithubFilled,
-  InfoOutlined,
   KeyOutlined,
   LogoutOutlined,
   NotificationOutlined,
@@ -18,11 +17,11 @@ import {
   faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, MenuProps, Tooltip } from "antd";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { Dropdown, MenuProps } from "antd";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { ReactNode, useState } from "react";
 import "./styles.css";
 
 export default function RootLayout({
@@ -34,31 +33,15 @@ export default function RootLayout({
   const i18nMenu = useTranslations("menu");
   const { push } = useRouter();
 
-  const [pathname, setPathname] = useState("/chat");
-
-  const [pageName, setPageName] = useState(
-    generatePageTitle(
-      <FontAwesomeIcon icon={faCommentDots} color="#4096ff" />,
-      i18nMenu("chat")
-    )
-  );
+  const pathName = usePathname();
+  const [pathname, setPathname] = useState(pathName);
 
   //用户下拉菜单点击操作
   const onActionClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "logout") {
       push("/login");
-    } else if (key === "profile") {
-      push("/user/profile");
     }
   };
-
-  function generatePageTitle(icon: ReactNode, name: string) {
-    return (
-      <div style={{ color: "#4096ff" }}>
-        {icon} <span>{i18nMenu("pre")}{name}</span>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -72,10 +55,6 @@ export default function RootLayout({
         siderWidth={180}
         style={{
           height: "100vh",
-        }}
-        menu={{
-          type: "group",
-          collapsedShowTitle: true,
         }}
         token={{
           sider: {
@@ -97,7 +76,7 @@ export default function RootLayout({
             },
             {
               path: "/app/list",
-              name: i18nMenu('app'),
+              name: i18nMenu("app"),
               icon: <FontAwesomeIcon icon={faRobot} />,
               component: "./app",
             },
@@ -113,21 +92,87 @@ export default function RootLayout({
               icon: <FontAwesomeIcon icon={faDatabase} />,
               component: "./dataset",
             },
+            {
+              path: "/account",
+              name: i18nMenu("account"),
+              icon: <UserOutlined />,
+              component: "./account",
+              routes: [
+                {
+                  path: "/account/info",
+                  name: i18nMenu("account_info"),
+                  icon: <UserOutlined />,
+                  component: "./info",
+                },
+                {
+                  path: "/account/log",
+                  name: i18nMenu("account_log"),
+                  icon: <CalendarOutlined />,
+                  component: "./log",
+                },
+                {
+                  path: "/account/api",
+                  name: i18nMenu("account_api"),
+                  icon: <KeyOutlined />,
+                  component: "./api",
+                },
+                {
+                  path: "/account/customize",
+                  name: i18nMenu("account_customize"),
+                  icon: <FontAwesomeIcon icon={faPalette} />,
+                  component: "./customize",
+                },
+                {
+                  path: "/account/notice",
+                  name: i18nMenu("account_notice"),
+                  icon: <NotificationOutlined />,
+                  component: "./notice",
+                },
+              ],
+            },
           ],
         }}
         location={{
           pathname,
         }}
-        menuItemRender={(item, dom) => (
-          <div
-            onClick={() => {
-              setPathname(item.path || "/chat");
-              setPageName(generatePageTitle(item.icon, item.name));
-            }}
-          >
-            <Link href={item.path !== undefined ? item.path : ""}>{dom}</Link>
-          </div>
-        )}
+        menuItemRender={(item, dom) => {
+          let shouldRenderIcon =
+            item.pro_layout_parentKeys && item.pro_layout_parentKeys.length > 0;
+          return (
+            <div
+              onClick={() => {
+                setPathname(item.path || "/chat");
+              }}
+            >
+              <Link href={item.path !== undefined ? item.path : ""}>
+                {shouldRenderIcon ? (
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    {item.icon}
+                    <span style={{ marginLeft: "8px" }}>{dom}</span>
+                  </span>
+                ) : (
+                  dom
+                )}
+              </Link>
+            </div>
+          );
+        }}
+        subMenuItemRender={(item, dom) => {
+          let shouldRenderIcon =
+            item.pro_layout_parentKeys && item.pro_layout_parentKeys.length > 0;
+          return (
+            <>
+              {shouldRenderIcon ? (
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {item.icon}
+                  <span style={{ marginLeft: "8px" }}>{dom}</span>
+                </span>
+              ) : (
+                dom
+              )}
+            </>
+          );
+        }}
         avatarProps={{
           src: "/avatar.jpeg",
           size: "small",
@@ -137,34 +182,6 @@ export default function RootLayout({
               <Dropdown
                 menu={{
                   items: [
-                    {
-                      key: "account",
-                      icon: <UserOutlined />,
-                      label: i18nMenu("account_info"),
-                    },
-                    {
-                      key: "log",
-                      icon: <CalendarOutlined />,
-                      label: i18nMenu("log"),
-                    },
-                    {
-                      key: "api",
-                      icon: <KeyOutlined />,
-                      label: i18nMenu("api_key"),
-                    },
-                    {
-                      key: "customize",
-                      icon: <FontAwesomeIcon icon={faPalette} />,
-                      label: i18nMenu("customize"),
-                    },
-                    {
-                      key: "notice",
-                      icon: <NotificationOutlined />,
-                      label: i18nMenu("notice"),
-                    },
-                    {
-                      type: "divider",
-                    },
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
@@ -205,7 +222,13 @@ export default function RootLayout({
           );
         }}
       >
-        <PageContainer title={pageName}>{children}</PageContainer>
+        <PageContainer
+          header={{
+            breadcrumb: {},
+          }}
+        >
+          {children}
+        </PageContainer>
       </ProLayout>
     </div>
   );

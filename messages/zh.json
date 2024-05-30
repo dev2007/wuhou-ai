@@ -16,11 +16,12 @@
     "app": "应用",
     "plugin": "插件",
     "dataset": "知识库",
+    "account": "账号",
     "account_info": "个人信息",
-    "log": "使用记录",
-    "api_key": "API 密钥",
-    "customize": "个性化",
-    "notice": "通知",
+    "account_log": "使用记录",
+    "account_api": "API 密钥",
+    "account_customize": "个性化",
+    "account_notice": "通知",
     "logout": "退出登录"
   }
 }

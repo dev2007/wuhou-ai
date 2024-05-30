@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "@/node_modules/next/navigation";
+import { useRouter } from "next/navigation";
 import { Flex } from "antd";
 import { useEffect } from "react";
 import HashLoader from "react-spinners/HashLoader";
