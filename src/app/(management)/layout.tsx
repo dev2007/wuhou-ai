@@ -2,7 +2,6 @@
 import {
   CalendarOutlined,
   GithubFilled,
-  InfoOutlined,
   KeyOutlined,
   LogoutOutlined,
   NotificationOutlined,
@@ -18,9 +17,10 @@ import {
   faRobot,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dropdown, MenuProps, Tooltip } from "antd";
+import { Dropdown, MenuProps } from "antd";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import "./styles.css";
 
@@ -29,33 +29,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const i18nGlobal = useTranslations("global");
+  const i18nMenu = useTranslations("menu");
   const { push } = useRouter();
 
-  const [pathname, setPathname] = useState("/chat");
-
-  const [pageName, setPageName] = useState(
-    generatePageTitle(
-      <FontAwesomeIcon icon={faCommentDots} color="#4096ff" />,
-      "聊天"
-    )
-  );
+  const pathName = usePathname();
+  const [pathname, setPathname] = useState(pathName);
 
   //用户下拉菜单点击操作
   const onActionClick: MenuProps["onClick"] = ({ key }) => {
     if (key === "logout") {
       push("/login");
-    } else if (key === "profile") {
-      push("/user/profile");
     }
   };
-
-  function generatePageTitle(icon: ReactNode, name: string) {
-    return (
-      <div style={{ color: "#4096ff" }}>
-        {icon} <span>我的{name}</span>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -64,15 +50,11 @@ export default function RootLayout({
       }}
     >
       <ProLayout
-        title="武侯 AI"
+        title={i18nGlobal("title")}
         logo="/favicon.png"
         siderWidth={180}
         style={{
           height: "100vh",
-        }}
-        menu={{
-          type: "group",
-          collapsedShowTitle: true,
         }}
         token={{
           sider: {
@@ -88,43 +70,109 @@ export default function RootLayout({
           routes: [
             {
               path: "/chat",
-              name: "聊天",
+              name: i18nMenu("chat"),
               icon: <FontAwesomeIcon icon={faCommentDots} />,
               component: "./chat",
             },
             {
               path: "/app/list",
-              name: "应用",
+              name: i18nMenu("app"),
               icon: <FontAwesomeIcon icon={faRobot} />,
               component: "./app",
             },
             {
               path: "/plugin/list",
-              name: "插件",
+              name: i18nMenu("plugin"),
               icon: <FontAwesomeIcon icon={faPuzzlePiece} />,
               component: "./plugin",
             },
             {
               path: "/dataset/list",
-              name: "知识库",
+              name: i18nMenu("dataset"),
               icon: <FontAwesomeIcon icon={faDatabase} />,
               component: "./dataset",
+            },
+            {
+              path: "/account",
+              name: i18nMenu("account"),
+              icon: <UserOutlined />,
+              component: "./account",
+              routes: [
+                {
+                  path: "/account/info",
+                  name: i18nMenu("account_info"),
+                  icon: <UserOutlined />,
+                  component: "./info",
+                },
+                {
+                  path: "/account/log",
+                  name: i18nMenu("account_log"),
+                  icon: <CalendarOutlined />,
+                  component: "./log",
+                },
+                {
+                  path: "/account/api",
+                  name: i18nMenu("account_api"),
+                  icon: <KeyOutlined />,
+                  component: "./api",
+                },
+                {
+                  path: "/account/customize",
+                  name: i18nMenu("account_customize"),
+                  icon: <FontAwesomeIcon icon={faPalette} />,
+                  component: "./customize",
+                },
+                {
+                  path: "/account/notice",
+                  name: i18nMenu("account_notice"),
+                  icon: <NotificationOutlined />,
+                  component: "./notice",
+                },
+              ],
             },
           ],
         }}
         location={{
           pathname,
         }}
-        menuItemRender={(item, dom) => (
-          <div
-            onClick={() => {
-              setPathname(item.path || "/chat");
-              setPageName(generatePageTitle(item.icon, item.name));
-            }}
-          >
-            <Link href={item.path !== undefined ? item.path : ""}>{dom}</Link>
-          </div>
-        )}
+        menuItemRender={(item, dom) => {
+          let shouldRenderIcon =
+            item.pro_layout_parentKeys && item.pro_layout_parentKeys.length > 0;
+          return (
+            <div
+              onClick={() => {
+                setPathname(item.path || "/chat");
+              }}
+            >
+              <Link href={item.path !== undefined ? item.path : ""}>
+                {shouldRenderIcon ? (
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    {item.icon}
+                    <span style={{ marginLeft: "8px" }}>{dom}</span>
+                  </span>
+                ) : (
+                  dom
+                )}
+              </Link>
+            </div>
+          );
+        }}
+        subMenuItemRender={(item, dom) => {
+          let shouldRenderIcon =
+            item.pro_layout_parentKeys && item.pro_layout_parentKeys.length > 0;
+          return (
+            <>
+              {shouldRenderIcon ? (
+                <span style={{ display: "flex", alignItems: "center" }}>
+                  {item.icon}
+                  <span style={{ marginLeft: "8px" }}>{dom}</span>
+                </span>
+              ) : (
+                dom
+              )}
+            </>
+          );
+        }}
         avatarProps={{
           src: "/avatar.jpeg",
           size: "small",
@@ -135,40 +183,9 @@ export default function RootLayout({
                 menu={{
                   items: [
                     {
-                      key: "account",
-                      icon: <UserOutlined />,
-                      label: "个人信息",
-                    },
-                    {
-                      key: "log",
-                      icon: <CalendarOutlined />,
-                      label: "使用记录",
-                    },
-                    {
-                      key: "api",
-                      icon: <KeyOutlined />,
-                      label: "API 密钥",
-                    },
-                    {
-                      key: "customize",
-                      icon: <FontAwesomeIcon icon={faPalette} />,
-                      label: "个性化",
-                    },
-                    {
-                      key: "notice",
-                      icon: <NotificationOutlined />,
-                      label: "通知",
-                    },
-                    {
-                      type: "divider",
-                    },
-                    {
                       key: "logout",
                       icon: <LogoutOutlined />,
-                      label: "退出登录",
-                    },
-                    {
-                      type: "divider",
+                      label: i18nMenu("logout"),
                     },
                   ],
                   onClick: onActionClick,
@@ -196,8 +213,8 @@ export default function RootLayout({
           return (
             <p
               style={{
-                textAlign: 'center',
-                color: 'rgba(0,0,0,0.6)',
+                textAlign: "center",
+                color: "rgba(0,0,0,0.6)",
               }}
             >
               ©{new Date().getFullYear()} Mortnon. (V1.0.0)
@@ -206,7 +223,9 @@ export default function RootLayout({
         }}
       >
         <PageContainer
-          title={pageName}
+          header={{
+            breadcrumb: {},
+          }}
         >
           {children}
         </PageContainer>

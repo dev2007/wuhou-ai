@@ -1,0 +1,27 @@
+{
+  "global": {
+    "title": "WuHou AI",
+    "sub_title": "Knowledge base Q&A system based on LLM model"
+  },
+  "login": {
+    "username": "Username",
+    "username_hint": "Please input username",
+    "password": "Password",
+    "password_hint": "Please input password",
+    "login": "Sign In"
+  },
+  "menu": {
+    "pre": "My ",
+    "chat": "Chat",
+    "app": "Application",
+    "plugin": "Plugin",
+    "dataset": "Knowledge Base",
+    "account": "Account",
+    "account_info": "Personal Information",
+    "account_log": "Usage Record",
+    "account_api": "API Key",
+    "account_customize": "Personalization",
+    "account_notice": "Notice",
+    "logout": "Sign Out"
+  }
+}
