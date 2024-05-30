@@ -1,20 +1,23 @@
 "use client";
 import { useRouter } from "@/node_modules/next/navigation";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import {
-    LockOutlined, UserOutlined
-} from "@ant-design/icons";
-import {
-    LoginForm,
-    ProConfigProvider, ProFormInstance, ProFormText
+  LoginForm,
+  ProConfigProvider,
+  ProFormInstance,
+  ProFormText,
 } from "@ant-design/pro-components";
 import { message } from "antd";
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { LoginReqEntity } from "../_modules/definies";
 
 type LoginType = "phone" | "account";
 
 export default () => {
-  const {push} = useRouter();
+  const i18nGlobal = useTranslations("global");
+  const i18nLogin = useTranslations("login");
+  const { push } = useRouter();
   const [loginType, setLoginType] = useState<LoginType>("account");
 
   const loginFormRef = useRef<ProFormInstance>();
@@ -42,8 +45,13 @@ export default () => {
         <div>
           <LoginForm
             logo="/favicon.png"
-            title="WuHou AI"
-            subTitle="基于 LLM 大语言模型的知识库问答系统"
+            title={i18nGlobal("title")}
+            subTitle={i18nGlobal("sub_title")}
+            submitter={{
+              searchConfig: {
+                submitText: i18nLogin("login"),
+              },
+            }}
             actions={
               <div
                 style={{
@@ -66,11 +74,11 @@ export default () => {
                 size: "large",
                 prefix: <UserOutlined className={"prefixIcon"} />,
               }}
-              placeholder={"用户名"}
+              placeholder={i18nLogin("username")}
               rules={[
                 {
                   required: true,
-                  message: "请输入用户名",
+                  message: i18nLogin("username_hint"),
                 },
               ]}
             />
@@ -80,11 +88,11 @@ export default () => {
                 size: "large",
                 prefix: <LockOutlined className={"prefixIcon"} />,
               }}
-              placeholder={"密码"}
+              placeholder={i18nLogin("password")}
               rules={[
                 {
                   required: true,
-                  message: "请输入密码",
+                  message: i18nLogin("password_hint"),
                 },
               ]}
             />

@@ -22,6 +22,7 @@ import { Dropdown, MenuProps, Tooltip } from "antd";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
+import { useTranslations } from "next-intl";
 import "./styles.css";
 
 export default function RootLayout({
@@ -29,6 +30,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const i18nGlobal = useTranslations("global");
+  const i18nMenu = useTranslations("menu");
   const { push } = useRouter();
 
   const [pathname, setPathname] = useState("/chat");
@@ -36,7 +39,7 @@ export default function RootLayout({
   const [pageName, setPageName] = useState(
     generatePageTitle(
       <FontAwesomeIcon icon={faCommentDots} color="#4096ff" />,
-      "聊天"
+      i18nMenu("chat")
     )
   );
 
@@ -52,7 +55,7 @@ export default function RootLayout({
   function generatePageTitle(icon: ReactNode, name: string) {
     return (
       <div style={{ color: "#4096ff" }}>
-        {icon} <span>我的{name}</span>
+        {icon} <span>{i18nMenu("pre")}{name}</span>
       </div>
     );
   }
@@ -64,7 +67,7 @@ export default function RootLayout({
       }}
     >
       <ProLayout
-        title="武侯 AI"
+        title={i18nGlobal("title")}
         logo="/favicon.png"
         siderWidth={180}
         style={{
@@ -88,25 +91,25 @@ export default function RootLayout({
           routes: [
             {
               path: "/chat",
-              name: "聊天",
+              name: i18nMenu("chat"),
               icon: <FontAwesomeIcon icon={faCommentDots} />,
               component: "./chat",
             },
             {
               path: "/app/list",
-              name: "应用",
+              name: i18nMenu('app'),
               icon: <FontAwesomeIcon icon={faRobot} />,
               component: "./app",
             },
             {
               path: "/plugin/list",
-              name: "插件",
+              name: i18nMenu("plugin"),
               icon: <FontAwesomeIcon icon={faPuzzlePiece} />,
               component: "./plugin",
             },
             {
               path: "/dataset/list",
-              name: "知识库",
+              name: i18nMenu("dataset"),
               icon: <FontAwesomeIcon icon={faDatabase} />,
               component: "./dataset",
             },
@@ -137,27 +140,27 @@ export default function RootLayout({
                     {
                       key: "account",
                       icon: <UserOutlined />,
-                      label: "个人信息",
+                      label: i18nMenu("account_info"),
                     },
                     {
                       key: "log",
                       icon: <CalendarOutlined />,
-                      label: "使用记录",
+                      label: i18nMenu("log"),
                     },
                     {
                       key: "api",
                       icon: <KeyOutlined />,
-                      label: "API 密钥",
+                      label: i18nMenu("api_key"),
                     },
                     {
                       key: "customize",
                       icon: <FontAwesomeIcon icon={faPalette} />,
-                      label: "个性化",
+                      label: i18nMenu("customize"),
                     },
                     {
                       key: "notice",
                       icon: <NotificationOutlined />,
-                      label: "通知",
+                      label: i18nMenu("notice"),
                     },
                     {
                       type: "divider",
@@ -165,10 +168,7 @@ export default function RootLayout({
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
-                      label: "退出登录",
-                    },
-                    {
-                      type: "divider",
+                      label: i18nMenu("logout"),
                     },
                   ],
                   onClick: onActionClick,
@@ -196,8 +196,8 @@ export default function RootLayout({
           return (
             <p
               style={{
-                textAlign: 'center',
-                color: 'rgba(0,0,0,0.6)',
+                textAlign: "center",
+                color: "rgba(0,0,0,0.6)",
               }}
             >
               ©{new Date().getFullYear()} Mortnon. (V1.0.0)
@@ -205,11 +205,7 @@ export default function RootLayout({
           );
         }}
       >
-        <PageContainer
-          title={pageName}
-        >
-          {children}
-        </PageContainer>
+        <PageContainer title={pageName}>{children}</PageContainer>
       </ProLayout>
     </div>
   );
