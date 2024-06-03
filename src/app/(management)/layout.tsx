@@ -29,8 +29,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const i18nGlobal = useTranslations("global");
-  const i18nMenu = useTranslations("menu");
+  const i18n = useTranslations();
   const { push } = useRouter();
 
   const pathName = usePathname();
@@ -50,7 +49,7 @@ export default function RootLayout({
       }}
     >
       <ProLayout
-        title={i18nGlobal("title")}
+        title={i18n("global.title")}
         logo="/favicon.png"
         siderWidth={180}
         style={{
@@ -70,61 +69,61 @@ export default function RootLayout({
           routes: [
             {
               path: "/chat",
-              name: i18nMenu("chat"),
+              name: i18n("menu.chat"),
               icon: <FontAwesomeIcon icon={faCommentDots} />,
               component: "./chat",
             },
             {
               path: "/app/list",
-              name: i18nMenu("app"),
+              name: i18n("menu.app"),
               icon: <FontAwesomeIcon icon={faRobot} />,
               component: "./app",
             },
             {
               path: "/plugin/list",
-              name: i18nMenu("plugin"),
+              name: i18n("menu.plugin"),
               icon: <FontAwesomeIcon icon={faPuzzlePiece} />,
               component: "./plugin",
             },
             {
               path: "/dataset/list",
-              name: i18nMenu("dataset"),
+              name: i18n("menu.dataset"),
               icon: <FontAwesomeIcon icon={faDatabase} />,
               component: "./dataset",
             },
             {
               path: "/account",
-              name: i18nMenu("account"),
+              name: i18n("menu.account"),
               icon: <UserOutlined />,
               component: "./account",
               routes: [
                 {
                   path: "/account/info",
-                  name: i18nMenu("account_info"),
+                  name: i18n("menu.account_info"),
                   icon: <UserOutlined />,
                   component: "./info",
                 },
                 {
                   path: "/account/log",
-                  name: i18nMenu("account_log"),
+                  name: i18n("menu.account_log"),
                   icon: <CalendarOutlined />,
                   component: "./log",
                 },
                 {
                   path: "/account/api",
-                  name: i18nMenu("account_api"),
+                  name: i18n("menu.account_api"),
                   icon: <KeyOutlined />,
                   component: "./api",
                 },
                 {
                   path: "/account/customize",
-                  name: i18nMenu("account_customize"),
+                  name: i18n("menu.account_customize"),
                   icon: <FontAwesomeIcon icon={faPalette} />,
                   component: "./customize",
                 },
                 {
                   path: "/account/notice",
-                  name: i18nMenu("account_notice"),
+                  name: i18n("menu.account_notice"),
                   icon: <NotificationOutlined />,
                   component: "./notice",
                 },
@@ -185,7 +184,7 @@ export default function RootLayout({
                     {
                       key: "logout",
                       icon: <LogoutOutlined />,
-                      label: i18nMenu("logout"),
+                      label: i18n("logout"),
                     },
                   ],
                   onClick: onActionClick,

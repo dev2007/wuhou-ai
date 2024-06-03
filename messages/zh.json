@@ -23,5 +23,11 @@
     "account_customize": "个性化",
     "account_notice": "通知",
     "logout": "退出登录"
+  },
+  "chat":{
+    "app_list":"应用列表",
+    "new_dialog":"新的聊天",
+    "dialog_list":"聊天列表",
+    "exit":"退出聊天"
   }
 }

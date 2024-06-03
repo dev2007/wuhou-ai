@@ -23,5 +23,11 @@
     "account_customize": "Personalization",
     "account_notice": "Notice",
     "logout": "Sign Out"
+  },
+  "chat":{
+    "app_list":"App List",
+    "new_dialog":"New Chat",
+    "dialog_list":"Chat List",
+    "exit":"Exit Chat"
   }
 }
