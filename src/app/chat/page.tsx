@@ -22,45 +22,87 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslations } from "next-intl";
 import { Button, Grid, Row, Col, Flex, Menu, MenuProps, Drawer } from "antd";
 const { useBreakpoint } = Grid;
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AppData } from "../_modules/definies";
 
 export default function Chat() {
   const i18n = useTranslations();
 
   type MenuItem = Required<MenuProps>["items"][number];
 
-  //demo
-  const appItems: MenuItem[] = [
-    {
-      key: "app1",
-      label: "自定义应用1",
-      icon: <MailOutlined />,
-    },
-    {
-      key: "app2",
-      label: "自定义应用2",
-      icon: <MailOutlined />,
-    },
-    {
-      key: "app3",
-      label: "自定义应用3",
-      icon: <MailOutlined />,
-    },
-  ];
+  //应用列表数据
+  const [appItems, setAppItems] = useState<MenuItem[]>([]);
 
-  //demo
-  const dialogItems: MenuItem[] = [
-    {
-      key: "dialog1",
-      label: "新会话1",
-      icon: <MailOutlined />,
-    },
-    {
-      key: "dialog2",
-      label: "新会话2",
-      icon: <MailOutlined />,
-    },
-  ];
+  //对话列表数据
+  const [dialogItems, setDialogItems] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    //demo
+    setAppItems([
+      {
+        key: "app1",
+        label: "自定义应用1",
+        icon: <MailOutlined />,
+      },
+      {
+        key: "app2",
+        label: "自定义应用2",
+        icon: <MailOutlined />,
+      },
+      {
+        key: "app3",
+        label: "自定义应用3",
+        icon: <MailOutlined />,
+      },
+    ]);
+  }, []);
+
+  //点击应用
+  const appClick: MenuProps["onClick"] = (e) => {
+    const key = e.key;
+
+    const selectedApp = appItems.find((app) => {
+      return app.key === key;
+    });
+
+    const app: AppData = {
+      key: selectedApp.key,
+      icon: selectedApp.icon,
+      name: selectedApp.label,
+      title: (
+        <>
+          {selectedApp.icon}
+          <span style={{ margin: "0 8px" }}>{selectedApp.label}</span>
+        </>
+      ),
+    };
+
+    //变更当前选择应用信息
+    setCurrentApp(app);
+
+    setSelectedAppKeys([key]);
+
+    //TODO:展示应用对应的对话列表
+
+    //demo
+    setDialogItems([
+      {
+        key: "dialog1",
+        label: "新会话1",
+        icon: <MailOutlined />,
+      },
+      {
+        key: "dialog2",
+        label: "新会话2",
+        icon: <MailOutlined />,
+      },
+    ]);
+  };
+
+  //当前选择的应用
+  const [currentApp, setCurrentApp] = useState<AppData>();
+
+  const [selectedAppKeys, setSelectedAppKeys] = useState<string[]>([]);
 
   //小屏的抽屉菜单控制
   //是否展示抽屉菜单
@@ -105,10 +147,12 @@ export default function Chat() {
   //是否展示对话列表的收起/展示按钮
   const [showDialogToggleBtn, setShowDialogToggleBtn] = useState(false);
 
+  //鼠标进入，展示收起对话按钮
   const dialogListMouseEnter = () => {
     setShowDialogToggleBtn(true);
   };
 
+  //鼠标离开，隐藏收起对话按钮
   const dialogListMouseLeave = () => {
     if (!dialogListShow) {
       setShowDialogToggleBtn(true);
@@ -125,9 +169,9 @@ export default function Chat() {
         md={0}
         lg={4}
         xl={4}
-        style={{ zIndex: 2, height: `100vh`,backgroundColor:"#FFFFFF" }}
+        style={{ zIndex: 2, height: `100vh`, backgroundColor: "#FFFFFF" }}
       >
-        <div style={{zIndex: 2}}>
+        <div>
           <Flex justify="center" align="center" style={{ margin: "16px" }}>
             <Button
               href="/app/list"
@@ -151,6 +195,8 @@ export default function Chat() {
               items={appItems}
               style={{ border: "0px", margin: "8px 0 0" }}
               mode="inline"
+              selectedKeys={selectedAppKeys}
+              onClick={appClick}
             />
           </ProCard>
         </div>
@@ -167,7 +213,11 @@ export default function Chat() {
           onMouseEnter={dialogListMouseEnter}
           onMouseLeave={dialogListMouseLeave}
         >
-          <ProCard style={{ height: `100vh` }} title="自定义应用1" bordered>
+          <ProCard
+            style={{ height: `100vh` }}
+            title={currentApp?.title}
+            bordered
+          >
             <Flex justify="space-between">
               <div style={{ width: "80%" }}>
                 <Button
@@ -233,6 +283,8 @@ export default function Chat() {
                   items={appItems}
                   style={{ border: "0", margin: "8px 0 0" }}
                   mode="inline"
+                  selectedKeys={selectedAppKeys}
+                  onClick={appClick}
                 />
               </ProCard.TabPane>
               <ProCard.TabPane key="recordTab" tab={i18n("chat.dialog_list")}>
